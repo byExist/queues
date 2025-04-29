@@ -177,22 +177,21 @@ func TestClearBehavior(t *testing.T) {
 	assert.Equal(t, 100, v)
 }
 
-func TestCopyBehavior(t *testing.T) {
-	q := queues.New[int]()
+func TestCloneBehavior(t *testing.T) {
+	orig := queues.New[int]()
 	for i := 1; i <= 3; i++ {
-		queues.Enqueue(q, i)
+		queues.Enqueue(orig, i)
 	}
 
-	copied := queues.Copy(q)
-	require.Equal(t, queues.Len(q), queues.Len(copied))
+	new := queues.Clone(orig)
+	require.Equal(t, queues.Len(orig), queues.Len(new))
 
-	origValues := slices.Collect(queues.Values(q))
-	copyValues := slices.Collect(queues.Values(copied))
-	assert.Equal(t, origValues, copyValues)
+	origValues := slices.Collect(queues.Values(orig))
+	newValues := slices.Collect(queues.Values(new))
+	assert.Equal(t, origValues, newValues)
 
-	// Modify original and ensure copy is unaffected
-	queues.Enqueue(q, 99)
-	assert.NotEqual(t, queues.Len(q), queues.Len(copied))
+	queues.Enqueue(orig, 99)
+	assert.NotEqual(t, queues.Len(orig), queues.Len(new))
 }
 
 func TestCircularBufferWrapAround(t *testing.T) {
@@ -245,12 +244,12 @@ func ExampleCollect() {
 	// Output: 123
 }
 
-func ExampleCopy() {
+func ExampleClone() {
 	q := queues.New[int]()
 	queues.Enqueue(q, 1)
 	queues.Enqueue(q, 2)
 
-	copied := queues.Copy(q)
+	copied := queues.Clone(q)
 	for v := range queues.Values(copied) {
 		fmt.Print(v)
 	}

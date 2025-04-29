@@ -10,7 +10,7 @@ queues is a lightweight generic queue package written in Go. It uses dynamic res
 - Fast Enqueue/Dequeue operations using a circular buffer
 - Automatically grows capacity when needed
 - Can be cleared and reused
-- Provides a queue copy function
+- Provides a queue clone function
 - Supports iteration over values using iter.Seq
 
 ## Installation
@@ -78,7 +78,7 @@ Internally, it optimizes performance using a circular buffer and dynamically exp
 - `Dequeue(q *Queue[T]) (T, bool)`
 - `Peek(q *Queue[T]) (T, bool)`
 - `Clear(q *Queue[T])`
-- `Copy(q *Queue[T]) *Queue[T]`
+- `Clone(q *Queue[T]) *Queue[T]`
 - `Values(q *Queue[T]) iter.Seq[T]`
 - `Len(q *Queue[T]) int`
 

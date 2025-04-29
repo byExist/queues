@@ -42,8 +42,8 @@ func Collect[T any](i iter.Seq[T]) *Queue[T] {
 	return q
 }
 
-// Copy returns a new queue that is a copy of the given queue.
-func Copy[T any](q *Queue[T]) *Queue[T] {
+// Clone creates a new queue with the same elements as the given queue.
+func Clone[T any](q *Queue[T]) *Queue[T] {
 	return &Queue[T]{
 		items: append([]T{}, q.items...),
 		head:  q.head,
