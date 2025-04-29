@@ -1,6 +1,9 @@
 package queues
 
-import "iter"
+import (
+	"iter"
+	"slices"
+)
 
 // Queue is a generic, dynamically resizing circular queue.
 type Queue[T any] struct {
@@ -45,7 +48,7 @@ func Collect[T any](i iter.Seq[T]) *Queue[T] {
 // Clone creates a new queue with the same elements as the given queue.
 func Clone[T any](q *Queue[T]) *Queue[T] {
 	return &Queue[T]{
-		items: append([]T{}, q.items...),
+		items: slices.Clone(q.items),
 		head:  q.head,
 		tail:  q.tail,
 		size:  q.size,
