@@ -30,12 +30,7 @@ func (q *Queue[T]) grow() {
 
 // New creates a new empty queue.
 func New[T any]() *Queue[T] {
-	return NewWithCapacity[T](0)
-}
-
-// NewWithCapacity creates a new queue with the specified initial capacity.
-func NewWithCapacity[T any](capacity int) *Queue[T] {
-	return &Queue[T]{items: make([]T, 0, capacity)}
+	return &Queue[T]{items: make([]T, 0)}
 }
 
 // Collect builds a queue from a given sequence of elements.

@@ -16,12 +16,6 @@ func TestNewQueue(t *testing.T) {
 	assert.Equal(t, 0, queues.Len(q))
 }
 
-func TestNewWithCapacity(t *testing.T) {
-	q := queues.NewWithCapacity[int](5)
-	require.NotNil(t, q)
-	assert.Equal(t, 0, queues.Len(q))
-}
-
 func TestQueueDifferentTypes(t *testing.T) {
 	intQ := queues.New[int]()
 	queues.Enqueue(intQ, 42)
@@ -84,7 +78,7 @@ func TestEnqueueMultiple(t *testing.T) {
 }
 
 func TestEnqueueGrow(t *testing.T) {
-	q := queues.NewWithCapacity[int](2)
+	q := queues.New[int]()
 	queues.Enqueue(q, 1)
 	queues.Enqueue(q, 2)
 	queues.Enqueue(q, 3)
@@ -202,7 +196,7 @@ func TestCopyBehavior(t *testing.T) {
 }
 
 func TestCircularBufferWrapAround(t *testing.T) {
-	q := queues.NewWithCapacity[int](3)
+	q := queues.New[int]()
 
 	queues.Enqueue(q, 1)
 	queues.Enqueue(q, 2)
@@ -240,14 +234,6 @@ func ExampleNew() {
 	v, _ := queues.Dequeue(q)
 	fmt.Println(v)
 	// Output: 10
-}
-
-func ExampleNewWithCapacity() {
-	q := queues.NewWithCapacity[int](5)
-	queues.Enqueue(q, 20)
-	v, _ := queues.Dequeue(q)
-	fmt.Println(v)
-	// Output: 20
 }
 
 func ExampleCollect() {

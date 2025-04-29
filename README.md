@@ -70,7 +70,6 @@ Internally, it optimizes performance using a circular buffer and dynamically exp
 ### Constructors
 
 - `New[T]() *Queue[T]`
-- `NewWithCapacity[T](capacity int) *Queue[T]`
 - `Collect[T](seq iter.Seq[T]) *Queue[T]`
 
 ### Core Methods
