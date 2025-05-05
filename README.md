@@ -2,16 +2,10 @@
 
 ## What is "queues"?
 
-queues is a lightweight generic queue package written in Go. It uses dynamic resizing and a circular buffer internally to provide efficient and fast queue operations like Enqueue and Dequeue.
+`queues` is a lightweight generic queue package written in Go. It provides efficient queue operations like Enqueue, Dequeue, and Peek, and supports iteration over elements using `iter.Seq`. Internally, it uses a circular buffer with dynamic resizing to ensure fast performance even as elements are added and removed.
 
-## Features
+This package supports generic types, automatically grows capacity when needed, and allows for queue cloning, clearing, and reuse. It also provides convenient string and JSON representations of queues for easier debugging and integration.
 
-- Supports generic types
-- Fast Enqueue/Dequeue operations using a circular buffer
-- Automatically grows capacity when needed
-- Can be cleared and reused
-- Provides a queue clone function
-- Supports iteration over values using iter.Seq
 
 ## Installation
 
@@ -59,28 +53,53 @@ func main() {
 }
 ```
 
-## Usage
+```output
+Peek: 1
+Dequeue: 1
+Dequeue: 2
+Dequeue: 3
+Length: 0
+```
 
-The queues package makes it easy to create and manage lightweight queues. You can quickly perform operations like adding (Enqueue), removing (Dequeue), peeking at the front element (Peek), and iterating over all elements (Values).
-
-Internally, it optimizes performance using a circular buffer and dynamically expands memory when necessary.
 
 ## API Overview
 
 ### Constructors
 
-- `New[T]() *Queue[T]`
-- `Collect[T](seq iter.Seq[T]) *Queue[T]`
+| Function                            | Description                         | 시간복잡도      |
+|-------------------------------------|-------------------------------------|-----------------|
+| `New[T]()`                          | Create a new empty queue            | O(1)            |
+| `Collect[T](seq iter.Seq[T])`       | Build a queue from an iterator      | O(n)            |
 
-### Core Methods
+### Operations
 
-- `Enqueue(q *Queue[T], item T)`
-- `Dequeue(q *Queue[T]) (T, bool)`
-- `Peek(q *Queue[T]) (T, bool)`
-- `Clear(q *Queue[T])`
-- `Clone(q *Queue[T]) *Queue[T]`
-- `Values(q *Queue[T]) iter.Seq[T]`
-- `Len(q *Queue[T]) int`
+| Function                            | Description                         | 시간복잡도      |
+|-------------------------------------|-------------------------------------|-----------------|
+| `Enqueue(q *Queue[T], item T)`      | Add an element to the end           | Amortized O(1)  |
+| `Dequeue(q *Queue[T]) (T, bool)`    | Remove and return the front element | O(1)            |
+| `Peek(q *Queue[T]) (T, bool)`       | Peek at the front element           | O(1)            |
+| `Clear(q *Queue[T])`                | Remove all elements                 | O(1)            |
+| `Clone(q *Queue[T]) *Queue[T]`      | Create a shallow copy of the queue  | O(n)            |
+
+### Introspection
+
+| Function                            | Description                         | 시간복잡도      |
+|-------------------------------------|-------------------------------------|-----------------|
+| `Len(q *Queue[T]) int`              | Return the number of elements       | O(1)            |
+
+### Iteration
+
+| Function                            | Description                         | 시간복잡도      |
+|-------------------------------------|-------------------------------------|-----------------|
+| `Values(q *Queue[T]) iter.Seq[T]`   | Get an iterator over the queue      | O(1)            |
+
+### Methods
+
+| Method                              | Description                         | 시간복잡도      |
+|-------------------------------------|-------------------------------------|-----------------|
+| `(*Queue[T]) String() string`       | Return a string representation      | O(n)            |
+| `(*Queue[T]) MarshalJSON() ([]byte, error)` | Serialize the queue to JSON   | O(n)            |
+| `(*Queue[T]) UnmarshalJSON([]byte) error`   | Parse a JSON array into a queue | O(n)            |
 
 ## License
 

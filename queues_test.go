@@ -1,6 +1,7 @@
 package queues_test
 
 import (
+	"encoding/json"
 	"fmt"
 	"slices"
 	"testing"
@@ -9,6 +10,35 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func TestQueueString(t *testing.T) {
+	q := queues.New[int]()
+	queues.Enqueue(q, 1)
+	queues.Enqueue(q, 2)
+	queues.Enqueue(q, 3)
+	str := q.String()
+	assert.Contains(t, str, "Queue{")
+	assert.Contains(t, str, "1")
+	assert.Contains(t, str, "2")
+	assert.Contains(t, str, "3")
+}
+
+func TestQueueMarshalUnmarshalJSON(t *testing.T) {
+	q := queues.New[int]()
+	queues.Enqueue(q, 1)
+	queues.Enqueue(q, 2)
+	data, err := json.Marshal(q)
+	require.NoError(t, err)
+
+	var restored queues.Queue[int]
+	err = json.Unmarshal(data, &restored)
+	require.NoError(t, err)
+
+	assert.Equal(t, queues.Len(q), queues.Len(&restored))
+	orig := slices.Collect(queues.Values(q))
+	copy := slices.Collect(queues.Values(&restored))
+	assert.Equal(t, orig, copy)
+}
 
 func TestNewQueue(t *testing.T) {
 	q := queues.New[int]()
@@ -306,4 +336,33 @@ func ExampleClear() {
 	queues.Clear(q)
 	fmt.Println(queues.Len(q))
 	// Output: 0
+}
+
+func ExampleQueue_String() {
+	q := queues.New[int]()
+	queues.Enqueue(q, 10)
+	queues.Enqueue(q, 20)
+	fmt.Println(q.String())
+	// Output:
+	// Queue{10, 20}
+}
+
+func ExampleQueue_MarshalJSON() {
+	q := queues.New[int]()
+	queues.Enqueue(q, 5)
+	queues.Enqueue(q, 15)
+	data, _ := json.Marshal(q)
+	fmt.Println(string(data))
+	// Output:
+	// [5,15]
+}
+
+func ExampleQueue_UnmarshalJSON() {
+	var q queues.Queue[int]
+	_ = json.Unmarshal([]byte(`[3,6,9]`), &q)
+	for v := range queues.Values(&q) {
+		fmt.Print(v)
+	}
+	// Output:
+	// 369
 }

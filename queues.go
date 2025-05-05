@@ -1,8 +1,11 @@
 package queues
 
 import (
+	"encoding/json"
+	"fmt"
 	"iter"
 	"slices"
+	"strings"
 )
 
 // Queue is a generic, dynamically resizing circular queue.
@@ -12,23 +15,45 @@ type Queue[T any] struct {
 	size       int
 }
 
-// grow increases the capacity of the queue and reorders elements to maintain sequence.
-func (q *Queue[T]) grow() {
-	var newCap int
-	if len(q.items) < 1024 {
-		newCap = 2 * max(1, len(q.items))
-	} else {
-		newCap = len(q.items) + len(q.items)/4
-	}
-
-	newItems := make([]T, newCap)
+// String returns a string representation of the queue.
+func (q *Queue[T]) String() string {
+	var b strings.Builder
+	b.WriteString("Queue{")
 	for i := range q.size {
-		newItems[i] = q.items[(q.head+i)%len(q.items)]
+		if i > 0 {
+			b.WriteString(", ")
+		}
+		b.WriteString(fmt.Sprint(q.items[(q.head+i)%len(q.items)]))
 	}
+	b.WriteString("}")
+	return b.String()
+}
 
-	q.items = newItems
+// MarshalJSON implements json.Marshaler for Queue.
+func (q *Queue[T]) MarshalJSON() ([]byte, error) {
+	values := make([]T, q.size)
+	for i := range q.size {
+		values[i] = q.items[(q.head+i)%len(q.items)]
+	}
+	return json.Marshal(values)
+}
+
+// UnmarshalJSON implements json.Unmarshaler for Queue.
+func (q *Queue[T]) UnmarshalJSON(data []byte) error {
+	var values []T
+	if err := json.Unmarshal(data, &values); err != nil {
+		return err
+	}
+	q.items = make([]T, len(values))
+	copy(q.items, values)
 	q.head = 0
-	q.tail = q.size
+	if len(q.items) > 0 {
+		q.tail = len(values) % len(q.items)
+	} else {
+		q.tail = 0
+	}
+	q.size = len(values)
+	return nil
 }
 
 // New creates a new empty queue.
@@ -108,4 +133,23 @@ func Clear[T any](q *Queue[T]) {
 	q.head = 0
 	q.tail = 0
 	q.size = 0
+}
+
+// grow increases the capacity of the queue and reorders elements to maintain sequence.
+func (q *Queue[T]) grow() {
+	var newCap int
+	if len(q.items) < 1024 {
+		newCap = 2 * max(1, len(q.items))
+	} else {
+		newCap = len(q.items) + len(q.items)/4
+	}
+
+	newItems := make([]T, newCap)
+	for i := range q.size {
+		newItems[i] = q.items[(q.head+i)%len(q.items)]
+	}
+
+	q.items = newItems
+	q.head = 0
+	q.tail = q.size
 }
