@@ -66,14 +66,14 @@ Length: 0
 
 ### Constructors
 
-| Function                            | Description                         | 시간복잡도      |
+| Function                            | Description                         | Time Complexity |
 |-------------------------------------|-------------------------------------|-----------------|
 | `New[T]()`                          | Create a new empty queue            | O(1)            |
 | `Collect[T](seq iter.Seq[T])`       | Build a queue from an iterator      | O(n)            |
 
 ### Operations
 
-| Function                            | Description                         | 시간복잡도      |
+| Function                            | Description                         | Time Complexity |
 |-------------------------------------|-------------------------------------|-----------------|
 | `Enqueue(q *Queue[T], item T)`      | Add an element to the end           | Amortized O(1)  |
 | `Dequeue(q *Queue[T]) (T, bool)`    | Remove and return the front element | O(1)            |
@@ -83,19 +83,19 @@ Length: 0
 
 ### Introspection
 
-| Function                            | Description                         | 시간복잡도      |
+| Function                            | Description                         | Time Complexity |
 |-------------------------------------|-------------------------------------|-----------------|
 | `Len(q *Queue[T]) int`              | Return the number of elements       | O(1)            |
 
 ### Iteration
 
-| Function                            | Description                         | 시간복잡도      |
+| Function                            | Description                         | Time Complexity |
 |-------------------------------------|-------------------------------------|-----------------|
 | `Values(q *Queue[T]) iter.Seq[T]`   | Get an iterator over the queue      | O(1)            |
 
 ### Methods
 
-| Method                              | Description                         | 시간복잡도      |
+| Method                              | Description                         | Time Complexity |
 |-------------------------------------|-------------------------------------|-----------------|
 | `(*Queue[T]) String() string`       | Return a string representation      | O(n)            |
 | `(*Queue[T]) MarshalJSON() ([]byte, error)` | Serialize the queue to JSON   | O(n)            |
