@@ -2,7 +2,7 @@
 
 A simple, allocation-efficient FIFO queue implementation in Go.
 
-The `queues` package provides a dynamically resizing, ring-buffer queue supporting enqueue, dequeue, and peek operations. It is designed for high performance in streaming or producer-consumer scenarios with minimal allocations.
+The `queues` package provides a dynamically resizing, ring-buffer queue supporting enqueue, dequeue, and peek operations. It is a simple, allocation-efficient queue designed for streaming or producer-consumer scenarios.
 
 ---
 
