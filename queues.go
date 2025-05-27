@@ -61,6 +61,14 @@ func New[T any]() *Queue[T] {
 	return &Queue[T]{items: make([]T, 0)}
 }
 
+// NewWithCapacity creates a new queue with a specified initial capacity.
+func NewWithCapacity[T any](capacity int) *Queue[T] {
+	if capacity < 0 {
+		panic("capacity cannot be negative")
+	}
+	return &Queue[T]{items: make([]T, 0, capacity)}
+}
+
 // Collect builds a queue from a given sequence of elements.
 func Collect[T any](i iter.Seq[T]) *Queue[T] {
 	q := New[T]()

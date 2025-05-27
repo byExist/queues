@@ -46,6 +46,12 @@ func TestNewQueue(t *testing.T) {
 	assert.Equal(t, 0, queues.Len(q))
 }
 
+func TestNewWithCapacity(t *testing.T) {
+	q := queues.NewWithCapacity[int](5)
+	require.NotNil(t, q)
+	assert.Equal(t, 0, queues.Len(q))
+}
+
 func TestQueueDifferentTypes(t *testing.T) {
 	intQ := queues.New[int]()
 	queues.Enqueue(intQ, 42)
@@ -263,6 +269,17 @@ func ExampleNew() {
 	v, _ := queues.Dequeue(q)
 	fmt.Println(v)
 	// Output: 10
+}
+
+func ExampleNewWithCapacity() {
+	q := queues.NewWithCapacity[int](5)
+	for i := 1; i <= 5; i++ {
+		queues.Enqueue(q, i)
+	}
+	for v := range queues.Values(q) {
+		fmt.Print(v)
+	}
+	// Output: 12345
 }
 
 func ExampleCollect() {
