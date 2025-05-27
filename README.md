@@ -1,21 +1,23 @@
 # queues [![GoDoc](https://pkg.go.dev/badge/github.com/byExist/queues.svg)](https://pkg.go.dev/github.com/byExist/queues) [![Go Report Card](https://goreportcard.com/badge/github.com/byExist/queues)](https://goreportcard.com/report/github.com/byExist/queues)
 
-## What is "queues"?
+A simple, allocation-efficient FIFO queue implementation in Go.
 
-`queues` is a lightweight generic queue package written in Go. It provides efficient queue operations like Enqueue, Dequeue, and Peek, and supports iteration over elements using `iter.Seq`. Internally, it uses a circular buffer with dynamic resizing to ensure fast performance even as elements are added and removed.
+The `queues` package provides a dynamically resizing, ring-buffer queue supporting enqueue, dequeue, and peek operations. It is designed for high performance in streaming or producer-consumer scenarios with minimal allocations.
 
-This package supports generic types, automatically grows capacity when needed, and allows for queue cloning, clearing, and reuse. It also provides convenient string and JSON representations of queues for easier debugging and integration.
+---
 
+## ✨ Features
 
-## Installation
+- ✅ Dynamically resizing ring buffer queue
+- ✅ Efficient enqueue and dequeue operations
+- ✅ Peek at front element without removal
+- ✅ Supports generic types with Go 1.18+ generics
+- ❌ Not thread-safe (no synchronization)
+- ❌ No priority or indexed access
 
-To install, use the following command:
+---
 
-```bash
-go get github.com/byExist/queues
-```
-
-## Quick Start
+## 🧱 Example
 
 ```go
 package main
@@ -28,79 +30,57 @@ import (
 func main() {
 	q := queues.New[int]()
 
-	// Enqueue elements
-	queues.Enqueue(q, 1)
-	queues.Enqueue(q, 2)
-	queues.Enqueue(q, 3)
+	queues.Enqueue(q, 10)
+	queues.Enqueue(q, 20)
+	queues.Enqueue(q, 30)
 
-	// Peek at the front element
-	v, ok := queues.Peek(q)
-	if ok {
-		fmt.Println("Peek:", v)
+	for v := range queues.Values(q) {
+		fmt.Println(v)
 	}
-
-	// Dequeue elements
-	for {
-		v, ok := queues.Dequeue(q)
-		if !ok {
-			break
-		}
-		fmt.Println("Dequeue:", v)
-	}
-
-	// Check length
-	fmt.Println("Length:", queues.Len(q))
 }
 ```
 
-```output
-Peek: 1
-Dequeue: 1
-Dequeue: 2
-Dequeue: 3
-Length: 0
-```
+---
 
+## 📚 Use When
 
-## API Overview
+- You need FIFO data structure
+- You want allocation-efficient buffered queues
+- You process items in a streaming or producer-consumer model
 
-### Constructors
+---
 
-| Function                            | Description                         | Time Complexity |
-|-------------------------------------|-------------------------------------|-----------------|
-| `New[T]()`                          | Create a new empty queue            | O(1)            |
-| `Collect[T](seq iter.Seq[T])`       | Build a queue from an iterator      | O(n)            |
+## 🚫 Avoid If
 
-### Operations
+- You need concurrent access (not thread-safe)
+- You want priority-based scheduling or indexed random access
 
-| Function                            | Description                         | Time Complexity |
-|-------------------------------------|-------------------------------------|-----------------|
-| `Enqueue(q *Queue[T], item T)`      | Add an element to the end           | Amortized O(1)  |
-| `Dequeue(q *Queue[T]) (T, bool)`    | Remove and return the front element | O(1)            |
-| `Peek(q *Queue[T]) (T, bool)`       | Peek at the front element           | O(1)            |
-| `Clear(q *Queue[T])`                | Remove all elements                 | O(1)            |
-| `Clone(q *Queue[T]) *Queue[T]`      | Create a shallow copy of the queue  | O(n)            |
+---
 
-### Introspection
+## 🔍 API
 
-| Function                            | Description                         | Time Complexity |
-|-------------------------------------|-------------------------------------|-----------------|
-| `Len(q *Queue[T]) int`              | Return the number of elements       | O(1)            |
-
-### Iteration
-
-| Function                            | Description                         | Time Complexity |
-|-------------------------------------|-------------------------------------|-----------------|
-| `Values(q *Queue[T]) iter.Seq[T]`   | Get an iterator over the queue      | O(1)            |
+| Function              | Description                          |
+|-----------------------|--------------------------------------|
+| `New[T]()`            | Create a new empty queue              |
+| `NewWithCapacity[T](capacity int)` | Create a new queue with initial capacity |
+| `Collect(seq)`        | Build a queue from an iterator       |
+| `Clone()`             | Return a shallow copy of the queue   |
+| `Clear()`             | Remove all elements from the queue   |
+| `Enqueue(q *Queue[T], item T)` | Add item to the back of the queue    |
+| `Dequeue(q *Queue[T]) (T, bool)` | Remove and return front item         |
+| `Peek(q *Queue[T]) (T, bool)`    | Return front item without removal    |
+| `Len() int`           | Number of elements in queue          |
+| `Values()`            | Iterate over queue elements          |
 
 ### Methods
 
-| Method                              | Description                         | Time Complexity |
-|-------------------------------------|-------------------------------------|-----------------|
-| `(*Queue[T]) String() string`       | Return a string representation      | O(n)            |
-| `(*Queue[T]) MarshalJSON() ([]byte, error)` | Serialize the queue to JSON   | O(n)            |
-| `(*Queue[T]) UnmarshalJSON([]byte) error`   | Parse a JSON array into a queue | O(n)            |
+| Method                | Description                          |
+|------------------------|--------------------------------------|
+| `q.String()`          | Returns a string representation       |
+| `q.MarshalJSON()` / `q.UnmarshalJSON()` | JSON serialization support |
 
-## License
+---
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+## 🪪 License
+
+MIT License. See [LICENSE](LICENSE).
